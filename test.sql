@@ -4,7 +4,7 @@ use bills;
 
 CREATE TABLE categories (
     categoryID INT AUTO_INCREMENT PRIMARY KEY,
-    categoryName VARCHAR(50) NOT NULL
+    categoryName VARCHAR(100) NOT NULL
 );
 
 INSERT INTO categories (categoryName) 
