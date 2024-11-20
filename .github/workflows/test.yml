@@ -1,0 +1,56 @@
+name: Check SQL Assignment
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test_sql_script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Update and install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install mysql-server mysql-client -y
+
+      - name: Start MySQL service
+        run: sudo service mysql start
+
+      - name: Create MySQL user and grant permissions
+        run: |
+          sudo mysql --execute="CREATE USER 'test'@'localhost' IDENTIFIED BY 'password';"
+          sudo mysql --execute="GRANT ALL PRIVILEGES ON bills.* TO 'test'@'localhost';"
+          sudo mysql --execute="FLUSH PRIVILEGES;"
+
+      - name: Execute SQL script
+        run: |
+          sudo mysql -u test -ppassword --execute="CREATE DATABASE IF NOT EXISTS bills;"
+          sudo mysql -u test -ppassword bills < ./test.sql
+
+      - name: Verify table creation
+        run: |
+          TABLE_COUNT=$(sudo mysql -u test -ppassword --execute="USE bills; SHOW TABLES;" | grep -c -e 'categories' -e 'customer')
+          if [ "$TABLE_COUNT" -ne 2 ]; then
+            echo "Error: Tables were not created successfully!"
+            exit 1
+          else
+            echo "Tables created successfully."
+          fi
+
+      - name: Verify data insertion into the customer table
+        run: |
+          CUSTOMER_COUNT=$(sudo mysql -u test -ppassword --execute="USE bills; SELECT COUNT(*) FROM customer;" | tail -n 1)
+          if [ "$CUSTOMER_COUNT" -lt 4 ]; then
+            echo "Error: Data insertion into the customer table failed!"
+            exit 1
+          else
+            echo "Data inserted into the customer table successfully."
+          fi
