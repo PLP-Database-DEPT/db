@@ -4,7 +4,7 @@ use bills;
 
 CREATE TABLE categories (
     categoryID INT AUTO_INCREMENT PRIMARY KEY,
-    categoryName VARCHAR(100) NOT NULL
+    categoryName VARCHAR(50) NOT NULL
 );
 
 INSERT INTO categories (categoryName) 
@@ -13,7 +13,7 @@ VALUES
 
 CREATE TABLE customer (
     customerID INT AUTO_INCREMENT PRIMARY KEY,
-    customerName VARCHAR(50) NOT NULL,
+    customerName VARCHAR(150) NOT NULL,
     email VARCHAR(20),
     phoneNumber VARCHAR(11),
     customerAddress VARCHAR(20),
