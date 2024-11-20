@@ -14,7 +14,7 @@ VALUES
 CREATE TABLE customer (
     customerID INT AUTO_INCREMENT PRIMARY KEY,
     customerName VARCHAR(150) NOT NULL,
-    email VARCHAR(20),
+    email VARCHAR(100),
     phoneNumber VARCHAR(11),
     customerAddress VARCHAR(20),
     dateCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
